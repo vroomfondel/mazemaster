@@ -1,3 +1,4 @@
+import json
 from typing import Optional, Tuple
 from uuid import UUID
 
@@ -6,7 +7,7 @@ from fastapi.testclient import TestClient
 
 import pytest
 from httpx import AsyncClient, Response
-
+from loguru import logger
 
 # This is the same as using the @pytest.mark.anyio on all test functions in the module
 pytestmark = pytest.mark.anyio

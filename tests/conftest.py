@@ -57,14 +57,14 @@ async def fastapi_client(fapi: FastAPI) -> AsyncClient:  # TestClient:
 
 @pytest.fixture(scope="module")
 async def get_new_access_token(
-    fastapi_client: AsyncClient, create_buyer_modulescoped: Tuple[str, str, str, UUID]
+    fastapi_client: AsyncClient, create_user_modulescoped: Tuple[str, str, str, UUID]
 ) -> str:
 
-    refresh_request_json: dict = {"refresh_token": create_buyer_modulescoped[1]}
+    refresh_request_json: dict = {"refresh_token": create_user_modulescoped[1]}
 
     refresh_response: Response = await fastapi_client.post(
-        "/users/token/refresh",
-        headers={"Authorization": f"Bearer {create_buyer_modulescoped[0]}", "content-type": "application/json"},
+        "/token/refresh",
+        headers={"Authorization": f"Bearer {create_user_modulescoped[0]}", "content-type": "application/json"},
         json=refresh_request_json,
     )
 
@@ -164,40 +164,3 @@ async def create_user(fastapi_client: AsyncClient) -> Tuple[str, str, str, UUID]
     response_del: Response = await fastapi_client.delete(
         "/me", headers={"Authorization": f"Bearer {response_data['access_token']}"}
     )
-
-
-# @pytest.fixture(scope="session")
-# async def create_maze(fastapi_client: AsyncClient, create_seller: Tuple[str, str, str, UUID]) -> dict:
-#     from mazemaster.utils.datapersistence import (
-#         generate_pseudo_product_data,
-#     )
-#
-#     gen: dict[str, dict] = generate_pseudo_product_data(
-#         seller_id=create_seller[3], amount=1, amt_available=123, cost=10
-#     )
-#     product_data: dict = next(iter(gen.values()))
-#     del product_data["id"]  # has id in pseudo-gen!
-#     # print(json.dumps(product_data, indent=4, default=str))
-#
-#     response: Response = await fastapi_client.post(
-#         "/products",
-#         json=json.loads(json.dumps(product_data, default=str)),
-#         headers={"Authorization": f"Bearer {create_seller[0]}", "content-type": "application/json"},
-#     )
-#     response_json: dict = response.json()
-#     # print(response_json)
-#
-#     assert response.status_code == status.HTTP_201_CREATED
-#     assert response_json["cost"] == product_data["cost"]
-#     assert (
-#         response_json["amountAvailable"] == product_data["amount_available"]
-#     )  #! response-model vs. (pseudo)data-model
-#     assert "id" in response_json
-#
-#     productid: UUID = UUID(response_json["id"])
-#
-#     yield response_json, productid
-#
-#     response_del: Response = await fastapi_client.delete(
-#         f"/products/{productid}", headers={"Authorization": f"Bearer {create_seller[0]}"}
-#     )
