@@ -116,7 +116,6 @@ class GridSize(ConstrainedStr):  # using GridSize = pydantic.constr(regex=_grids
     regex: Pattern[str] = _gridsize_pattern_compiled
 
 
-
 class KeyDictEntry(BaseModel):
     """entry-format for the key-'database'"""
 

@@ -162,7 +162,6 @@ async def get_data_by_key(db: AvailableDBS, keyvalue: Union[str, UUID]) -> List[
     return ret
 
 
-
 def rekey_db(db: AvailableDBS, newkeyfieldname: str) -> None:
     """changes the key to the column's value of 'newkeyfieldname':
     => deletes the 'old' entry and insert the old entry under a new key
@@ -203,4 +202,3 @@ def clean_db(db: AvailableDBS) -> None:
     logger.debug(json.dumps(todeletekeys, indent=4))
     for key in todeletekeys:
         dbh.delete(key)
-

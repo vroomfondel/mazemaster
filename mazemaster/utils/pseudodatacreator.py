@@ -10,7 +10,8 @@ from loguru import logger
 
 from mazemaster.datastructures.models_and_schemas import (
     ExcelCoordinate,
-    MazeInput, GridSize,
+    MazeInput,
+    GridSize,
 )
 
 from mazemaster.utils.configuration import settings
