@@ -1,0 +1,27 @@
+fastapi
+pydantic[dotenv]
+pytz
+# python-jose[cryptography]  # alternatively for pyjwt + jwcrypto
+pyjwt
+jwcrypto
+jwtjwkhelper
+aiofiles
+python-multipart
+passlib[bcrypt]
+cachetools
+loguru
+ordered-set
+
+
+# output-info
+colorama
+ratelimit
+
+# ray
+# numba
+
+deta
+
+# creating pseudo-db-entries
+faker
+faker-commerce
