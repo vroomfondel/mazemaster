@@ -16,6 +16,7 @@ from ..datastructures.models_and_schemas import (
     UserSelf,
     UserWithPassword,
     UserWithPasswordHashAndID,
+    UserPassword,
 )
 from ..utils import auth
 from ..utils.auth import (
@@ -35,6 +36,7 @@ from ..utils.auth import (
     responses_401,
     responses_403_429,
     verify_password,
+    create_password_hash,
 )
 from ..utils.configuration import settings
 from starlette.background import BackgroundTasks
@@ -197,8 +199,11 @@ async def read_user_me(me: MazeUser = Depends(get_current_user)) -> UserSelf:
 
 
 @router.patch("/me", response_model=UserSelf, response_model_exclude_none=True, responses=responses_401)
-async def update_user(me: MazeUser = Depends(get_current_user)) -> Optional[MazeUser]:
+async def update_user(userpass: UserPassword, me: MazeUser = Depends(get_current_user)) -> Optional[MazeUser]:
     """updates the user - in this regard only changeable data atm is password."""
+
+    hashed_pw: str = create_password_hash(userpass.password)
+    me.password_hashed = hashed_pw
 
     saved_user: Optional[MazeUser] = me.copy(update=me.dict())
     if saved_user:
