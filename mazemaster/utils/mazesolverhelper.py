@@ -157,8 +157,8 @@ async def trigger_solver(
 ) -> Optional[Union[Future, List[ExcelCoordinate]]]:
     global semaphore, executor, _maze_process_check_lock
 
-    solverimpl_min: SolverProtocol = BFSSolver  # or Astar
-    solverimpl_max: SolverProtocol = DFSSolver
+    solverimpl_min: SolverProtocol = BFSSolver  # type: ignore    # or Astar
+    solverimpl_max: SolverProtocol = DFSSolver  # type: ignore
 
     if solution.status == MazeSolutionStatus.PROCESSING:
         logger.debug(f"Already processing: {maze.hash=} {steps=}")
