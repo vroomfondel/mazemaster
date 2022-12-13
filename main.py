@@ -1,8 +1,6 @@
-import asyncio
 import os
 
 from mazemaster.utils.configuration import settings
-
 from mazemaster.app import app
 
 
