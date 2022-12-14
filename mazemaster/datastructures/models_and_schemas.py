@@ -7,7 +7,7 @@ from enum import Enum, auto
 from functools import reduce
 from hashlib import sha256
 from re import Match, Pattern
-from typing import Any, List, Optional, Tuple, cast
+from typing import Any, List, Optional, Tuple, cast, AnyStr, Iterator
 from uuid import UUID, uuid4
 
 from loguru import logger
@@ -41,10 +41,10 @@ from mazemaster.utils.datapersistence import (
 _password_pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).*$"
 _password_pattern_compiled = re.compile(_password_pattern)
 
-_username_pattern = "^(?=.*?[A-Z])(?=.*?[a-z]|[-]).*$"  # "^(?=.*?[a-z])(?=.*?[0-9]).*$"
+_username_pattern: str = r"^(?=.*?[A-Z])(?=.*?[a-z]|[-]).*$"  # "^(?=.*?[a-z])(?=.*?[0-9]).*$"
 _username_pattern_compiled = re.compile(_username_pattern)
 
-_gridsize_pattern: str = r"^([1-9]\d*)x([1-9]\d*)$"
+_gridsize_pattern: str = r"^([1-9]\d*)x(?=[2-9]|[1-9][0-9])(\d*)$"
 _gridsize_pattern_compiled: Pattern = re.compile(_gridsize_pattern)
 
 
