@@ -36,15 +36,16 @@ from mazemaster.utils.datapersistence import (
     save_maze_solution,
     save_user,
 )
+from mazemaster.utils.configuration import settings
 
 
-_password_pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).*$"
+_password_pattern = settings.PASSWORD_PATTERN
 _password_pattern_compiled = re.compile(_password_pattern)
 
-_username_pattern: str = r"^(?=.*?[A-Z])(?=.*?[a-z]|[-]).*$"  # "^(?=.*?[a-z])(?=.*?[0-9]).*$"
+_username_pattern: str = settings.USERNAME_PATTERN
 _username_pattern_compiled = re.compile(_username_pattern)
 
-_gridsize_pattern: str = r"^([1-9]\d*)x(?=[2-9]|[1-9][0-9])(\d*)$"
+_gridsize_pattern: str = settings.GRIDSIZE_PATTERN
 _gridsize_pattern_compiled: Pattern = re.compile(_gridsize_pattern)
 
 
