@@ -7,7 +7,7 @@ from enum import Enum, auto
 from functools import reduce
 from hashlib import sha256
 from re import Match, Pattern
-from typing import Any, List, Optional, Tuple, cast, AnyStr, Iterator
+from typing import Any, List, Optional, Tuple, cast, AnyStr, Iterator, Literal
 from uuid import UUID, uuid4
 
 from loguru import logger
@@ -134,6 +134,20 @@ class KeyDictEntry(BaseModel):
         assert values.get("private") or values.get("public")
 
         return values
+
+
+# https://www.rfc-editor.org/rfc/rfc7517#section-4
+class RS256JWKSetKey(BaseModel):
+    alg: Literal["RS256"] = "RS256"
+    kty: Literal["RSA"] = "RSA"
+    use: Literal["sig"] = "sig"
+    n: str
+    e: str
+    kid: str
+
+
+class RS256JWKSet(BaseModel):
+    keys: List[RS256JWKSetKey]
 
 
 class RefreshToken(BaseModel):

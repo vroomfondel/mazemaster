@@ -83,6 +83,8 @@ app.include_router(routers.users, prefix="")
 
 app.include_router(routers.mazes, prefix="/maze")
 
+app.include_router(routers.jwk, prefix="/.well-known")
+
 
 def _wants_explicitly_json_response(request: Request) -> bool:
     ah: Optional[str] = request.headers.get("Accept")

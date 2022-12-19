@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     # https://pydantic-docs.helpmanual.io/usage/settings/
     JWT_TOKEN_URL: str = Field(default="/login")  # /users/token")
     JWT_KEYID: str = Field(default="AUTO")
+    JKU_URL: Optional[str] = Field(default="AUTO")
     JWT_ALGORITHM: Literal["HS256", "RS256"] = Field(default="RS256")
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=30)
     JWT_REFRESH_TOKEN_EXPIRE_MINUTES: int = Field(default=10080)  # 1w

@@ -2,7 +2,7 @@ import datetime
 from typing import List, Optional, Tuple, Union
 from uuid import UUID
 
-from fastapi import APIRouter, Body, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, status, Request
 from loguru import logger
 
 from ..datastructures.models_and_schemas import (
@@ -90,9 +90,12 @@ async def read_users(me: MazeUser = Depends(get_current_user)) -> List[Union[Use
 async def refresh_token(
     background_tasks: BackgroundTasks,  # trigger backgroud task to cleanse old tokens
     refresh_token_supplied: RefreshToken,
+    request: Request,
     me_n_payload_PROBABLYEXPIRED: Tuple[MazeUser, dict] = Depends(get_PROBABLYEXPIRED_current_user_with_payload),
 ) -> dict:
     """get new request-token, access-token pair and kill the old refresh-tokens alltogether"""
+
+    request_url_base: str = str(request.base_url)
 
     me: MazeUser = me_n_payload_PROBABLYEXPIRED[0]
     current_token_payload: dict = me_n_payload_PROBABLYEXPIRED[1]
@@ -112,11 +115,13 @@ async def refresh_token(
 
     refresh_token_new: str
     refresh_token_new_id: UUID
-    refresh_token_new, refresh_token_new_id = await create_refresh_token(me.id)
+    refresh_token_new, refresh_token_new_id = await create_refresh_token(
+        userid=me.id, request_url_base=request_url_base
+    )
 
     access_token_new: str
     access_token_new_id: UUID
-    access_token_new, access_token_new_id = await create_access_token(me.id)
+    access_token_new, access_token_new_id = await create_access_token(userid=me.id, request_url_base=request_url_base)
 
     refresh_token_expires_dt: datetime.datetime = datetime.datetime.fromtimestamp(int(refresh_token_payload["exp"]))
 
@@ -164,12 +169,14 @@ async def logout_this_and_all_my_other_tokens(me: MazeUser = Depends(get_current
     responses=responses_401,
     status_code=status.HTTP_201_CREATED,
 )
-async def login_for_access_token(form_data: UnScopedOAuth2PasswordRequestForm = Depends()) -> dict:
+async def login_for_access_token(request: Request, form_data: UnScopedOAuth2PasswordRequestForm = Depends()) -> dict:
     logger.debug(f"{form_data.username=} {form_data.password=}")
     user: Optional[MazeUser] = await UserWithPasswordHashAndID.get_user(UserName(username=form_data.username))
     logger.debug(f"Return USER: {user}")
     if not user or not verify_password(form_data.password, user.password_hashed):
         raise CredentialsException()
+
+    request_url_base: str = str(request.base_url)
 
     msg: Optional[str] = None
     has_sessions: bool = await check_if_user_has_session(user.id)
@@ -178,11 +185,11 @@ async def login_for_access_token(form_data: UnScopedOAuth2PasswordRequestForm = 
 
     refresh_token: str
     refresh_token_id: UUID
-    refresh_token, refresh_token_id = await create_refresh_token(user.id)
+    refresh_token, refresh_token_id = await create_refresh_token(userid=user.id, request_url_base=request_url_base)
 
     access_token: str
     access_token_id: UUID
-    access_token, access_token_id = await create_access_token(user.id)
+    access_token, access_token_id = await create_access_token(userid=user.id, request_url_base=request_url_base)
 
     return {
         "access_token": access_token,
